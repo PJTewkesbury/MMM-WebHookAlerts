@@ -1,11 +1,10 @@
-# MMM-IFTTT
-[MagicMirror](https://magicmirror.builders/) Module for [IFTTT Maker](https://ifttt.com/maker) Web Based Notifications
+# MMM-WebHookAlerts
+[MagicMirror](https://magicmirror.builders/) Module for web hook alerts
 
 ![Screenshot](screenshot.png)
 
-This module is intended to display immediate notifications of events from If-This-Then-That channels.
-Notifications will show for a default of 60 seconds before disappearing. There is no on-screen history
-of events.
+This module is intended to display immediate notifications of events from any device that can send a HTTP Post message.
+Notifications will show for a default of 60 seconds before disappearing. There is no on-screen history of events.
 
 
 ## Module installation
@@ -14,8 +13,8 @@ Clone the module and npm install:
 
 ```bash
 cd ~/MagicMirror/modules
-git clone https://github.com/jc21/MMM-IFTTT.git
-cd MMM-IFTTT
+git clone https://github.com/PJTewkesbury/MMM-WebHookAlerts.git
+cd MMM-WebHookAlerts
 npm install
 ```
 
@@ -24,10 +23,27 @@ Add the module config to `~/MagicMirror/config/config.js`
 ```javascript
 modules: [
     {
-        module: 'MMM-IFTTT',
-        position: 'lower_third',
+        module: 'MMM-WebHookAlerts',        
+        position: 'fullscreen_above',
         config: {
-
+                fadeSpeed: 30,
+				displaySeconds:90,
+				sound:"twip.wav",
+				templates:
+					[
+						{
+							templateName: "DevOps",
+							template: "<div style='height:100%; background-color: #202020; color:white;border: 3px solid black; padding:5px'><h1>{{resource.definition.project.name}}</h1><br/><b>{{message.text}}</b></div>",
+							sound:"wobble.wav",
+						},
+						{
+							templateName: "DevOpsTest",
+							template: "<div class='fullscreen' style='border:1px solid black;'><b>{{message.text}}</b></div>",
+							displaySeconds:10,
+							fadeSpeed:10,
+							sound:"wobble.wav",
+						}
+					]    
         }
     }
 ]
@@ -68,7 +84,7 @@ modules: [
 </table>
 
 
-## Setting up a IFTTT Maker Notification
+## Setting up a WebHookAlerts
 
 ### Making your mirror internet accessible
 
@@ -82,6 +98,8 @@ You will need to forward any port you nominate, to the local IP of your Magic Mi
 You will also need to set up a dynamic DNS hostname for your home network, I'm a [Duckdns](https://www.duckdns.org/)
  fan personally. Atlernatively you could look into a http forward solution like [ngrok](https://ngrok.com/). 
 
+### Templates
+We use mustas
 
 ### IFTTT Maker Recipes
 
@@ -142,39 +160,6 @@ The `<<<{{From}}>>>` in the example above is a IFTTT wildcard field that you sel
 This module will send out notifications to other supported modules, if those options are included in the notification JSON.
 The supported modules are:
 
-#### [MMM-Pir-Sensor](https://github.com/paviro/MMM-PIR-Sensor)
-
-IFTTT Module will automatically tell the Pir Sensor module to wakeup the monitor when a notification is received. No addition setup is required.
-
-
-#### [MMM-PiLights](https://github.com/jc21/MMM-PiLights)
-
-This additional module can display light sequences using a LED strip. An example of a notification that includes PiLights sequence:
-
-```json
-{
-    "message": "<<<{{From}}>>> tagged you in a Photo",
-    "displaySeconds": 45,
-    "size": "large",
-    "pilights": "blue-pulse"
-}
-```
-
-Or with iterations:
-
-```json
-{
-    "message": "<<<{{From}}>>> tagged you in a Photo",
-    "displaySeconds": 45,
-    "size": "large",
-    "pilights": {
-        "sequence": "blue-pulse",
-        "iterations": 2
-    }
-}
-```
-
-
 #### [MMM-Sounds](https://github.com/jc21/MMM-Sounds)
 
 This additional module can play audio sounds if your mirror supports it. An example of a notification that would play a Sound:
@@ -210,5 +195,5 @@ You may want to use the delay approach to manually align the sound you're using 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
     -d '{"message": "Your pizza is ready!"}' \
-    "http://yourhouse.duckdns.org:8080/IFTTT"
+    "http://yourhouse.duckdns.org:8080/webhook?template=test"
 ```
