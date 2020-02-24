@@ -1,6 +1,6 @@
 /* global Module */
 
-Module.register('MMM-IFTTT',{
+Module.register('MMM-WebHookAlerts',{
 
     /**
      * Module config defaults
@@ -35,7 +35,7 @@ Module.register('MMM-IFTTT',{
      * @param {Object}  payload
      */
     socketNotificationReceived: function(notification, payload) {
-        if (notification === 'IFTTT_NOTIFICATION') {
+        if (notification === 'WEBHOOKALERTS_NOTIFICATION') {
             let fadeSpeed = this.config.fadeSpeed;
             if (this.currentNotification && typeof this.currentNotification.fadeSpeed !== 'undefined') {
                 fadeSpeed = this.currentNotification.fadeSpeed;

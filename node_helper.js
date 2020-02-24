@@ -65,7 +65,7 @@ module.exports = NodeHelper.create({
                         fadeSpeed : t.fadeSpeed,
                         size : t.size,
                     };
-                    this.sendSocketNotification('IFTTT_NOTIFICATION', msg);
+                    this.sendSocketNotification('WEBHOOKALERTS_NOTIFICATION', msg);
 
                     // return OK to caller
                     res.status(200)

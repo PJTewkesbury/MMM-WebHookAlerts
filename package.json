@@ -1,17 +1,17 @@
 {
-  "name": "MMM-IFTTT",
+  "name": "MMM-WebHookAlerts",
   "version": "1.1.0",
-  "description": "IFTTT Integration for Magic Mirror",
+  "description": "Webhook Alertsfor Magic Mirror",
   "keywords": [
     "magic mirror",
     "smart mirror",
-    "IFTTT",
+    "Web hooks",
+    "alerts",
     "module"
   ],
-  "author": "Jamie Curnow",
+  "author": "Peter Tewkesbury",
   "license": "MIT",
   "dependencies": {
-    "ajv": "^4.7.0",
     "body-parser": "latest",
     "mustache": "4.0.0"
   }
