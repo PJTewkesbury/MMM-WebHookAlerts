@@ -26,23 +26,23 @@ modules: [
         position: 'fullscreen_above',
         config: {
                 fadeSpeed: 30,
-				displaySeconds:90,
-				sound:"twip.wav",
-				templates:
-					[
-						{
-							templateName: "AzureDevOps",
-							template: "<div style='height:100%; background-color: #202020; color:white;border: 3px solid black; padding:5px'><h1>{{resource.definition.project.name}}</h1><br/><b>{{message.text}}</b></div>",
-							sound:"wobble.wav",
-						},
-						{
-							templateName: "SimpleAlert",
-							template: "<div class='fullscreen' style='border:1px solid black;'><b>{{message}}</b></div>",
-							displaySeconds:10,
-							fadeSpeed:10,
-							sound:"wobble.wav",
-						}
-					]    
+		displaySeconds:90,
+		sound:"twip.wav",
+		templates:
+		[
+		{
+			templateName: "AzureDevOps",
+			template: "<div style='height:100%; background-color: #202020; color:white;border: 3px solid black; padding:5px'><h1>{{resource.definition.project.name}}</h1><br/><b>{{message.text}}</b></div>",
+			sound:"wobble.wav",
+		},
+		{
+			templateName: "SimpleAlert",
+			template: "<div class='fullscreen' style='border:1px solid black;'><b>{{message}}</b></div>",
+			displaySeconds:10,
+			fadeSpeed:10,
+			sound:"wobble.wav",
+		}
+		]    
         }
     }
 ]
@@ -73,22 +73,19 @@ modules: [
             <td><code>3000</code></td>
             <td>Milliseconds fade transition speed</td>
         </tr>
-        <tr>
-            <td><code>size</code></td>
-            <td>String</td>
-            <td><code>large</code></td>
-            <td>Text size, options are: small, medium, large, xlarge</td>
-        </tr>
-	    <tr>
+	<tr>
             <td><code>templates</code></td>
             <td>Array of template</td>
-            <td><code>
-		templateName: "DevOps",
-		template: "<div style='height:600px; background-color: lightgray; color:black; border: 3px solid white; padding:15px'><h3>{{resource.definition.project.name}}</h3><br/>{{message.text}}</div>",
-		sound:"wobble.wav",
-		</code></td>
-            <td>Text size, options are: small, medium, large, xlarge</td>
-        </tr>	    
+            <td><code>		
+	    </code></td>
+            <td>This is where each template is defined. See below for details</td>
+        </tr>	    	    
+    </tbody>
+</table>
+
+## Template definition
+<table>
+	<tbody>	    
         </tr>
 	    <tr>
             <td><code>templateName</code></td>
@@ -102,8 +99,7 @@ modules: [
             <td>String</td>
             <td><code>A html mustache template</code></td>
             <td>This is the html mustache template</td>
-        </tr>
-	
+        </tr>	
         </tr>
 	    <tr>
             <td><code>sound</code></td>
@@ -111,10 +107,20 @@ modules: [
             <td><code>wobble.mp3</code></td>
             <td>optional - This is the name of the sound to play when the alert is shown</td>
         </tr>
-
+	<tr>
+            <td><code>displaySeconds</code></td>
+            <td>Integer</td>
+            <td><code>60</code></td>
+            <td>Number of seconds to show a notification for. This will override the default setting.</td>
+        </tr>
+        <tr>
+            <td><code>fadeSpeed</code></td>
+            <td>Integer</td>
+            <td><code>3000</code></td>
+            <td>Milliseconds fade transition speed. This will override the default setting.</td>
+        </tr>
     </tbody>
 </table>
-
 
 ## Setting up a WebHookAlerts
 
@@ -122,18 +128,32 @@ modules: [
 
 For this module to work, you will need to get dirty with your router, specifically with Port Forwarding.
 
-I'm not going to go into detail here, there are plenty of [Google results](https://www.google.com.au/?gws_rd=ssl#q=router+port+forwarding)
- on the topic.
+I'm not going to go into detail here, there are plenty of [Google results](https://www.google.com.au/?gws_rd=ssl#q=router+port+forwarding) on the topic.
 
 You will need to forward any port you nominate, to the local IP of your Magic Mirror on port 8080.
 
 You will also need to set up a dynamic DNS hostname for your home network, I'm a [Duckdns](https://www.duckdns.org/)
  fan personally. Atlernatively you could look into a http forward solution like [ngrok](https://ngrok.com/). 
+ 
+It is also possible to use NGinx as a reverse proxy to forward http traffic to your MagicMirror. Please note that when using a reverse proxy you need to be careful how you configure it because HTTP POST's can be forwarded as HTTP GET's if NGINX is configured to convert HTTP to HTTPS. 
 
-### Templates
-We use mustas
+# Sending WebHook Notifcations
 
-### IFTTT Maker Recipes
+Once you have configured your router/reverse proxy to route HTTP POST traffic to your Magic Mirror, you can send any HTTP POST messages using the url http://yourhouse.duckdns.org:8080/webhook?templateName=SimpleAlert.
+
+You can use CURL for testing.
+
+```bash
+curl -X POST -H "Content-Type: application/json" \
+    -d '{"message": "Your pizza is ready!"}' \
+    "http://yourhouse.duckdns.org:8080/webhook?templateName=SimpleAlert"
+```
+
+In this example we are using the templateName SimpleAlert which is matched to the template in the config.js. The template will then render the data into the template and display the result full screen.
+
+You can have as many templates as you need, and so display alerts from all sorts of systems:- Azure DevOps, GitHub,  IFTTT, etc.
+
+## IFTTT
 
 Log in to [IFTTT](https://ifttt.com/) and create a new recipe. You can essentially choose any channel
  you want for the Trigger but for the Action channel you must select Maker.
@@ -154,7 +174,7 @@ Action fields explained:
         <tr>
             <td>URL</td>
             <td>Notification endpoint</td>
-            <td>http://yourhouse.duckdns.org:8080/IFTTT</td>
+            <td>http://yourhouse.duckdns.org:8080/webhook?templateName=SimpleAlert</td>
         </tr>
         <tr>
             <td>Method</td>
@@ -171,8 +191,7 @@ Action fields explained:
             <td>The notification content, explained below</td>
             <td><pre><code>{
     "message": "<<<{{From}}>>> tagged you in a Photo",
-    "displaySeconds": 45,
-    "size": "large"
+    "displaySeconds": 45,    
 }</code></pre></td>
         </tr>
     </tbody>
@@ -194,38 +213,12 @@ The supported modules are:
 
 #### [MMM-Sounds](https://github.com/jc21/MMM-Sounds)
 
-This additional module can play audio sounds if your mirror supports it. An example of a notification that would play a Sound:
+This additional module can play audio sounds if your mirror supports it. An example of a template that would play a Sound:
 
 ```json
 {
-    "message": "<<<{{From}}>>> tagged you in a Photo",
-    "displaySeconds": 45,
-    "size": "large",
+    "templateName": "SimpleAlertWithSound",
+    "template":"<div>Your text here</div>", 
     "sound": "wobble.wav"
 }
-```
-
-Or with a delay:
-
-```json
-{
-    "message": "<<<{{From}}>>> tagged you in a Photo",
-    "displaySeconds": 45,
-    "size": "large",
-    "sound": {
-        "sound": "wobble.wav",
-        "delay": 1000
-    }
-}
-```
-
-You may want to use the delay approach to manually align the sound you're using with the light sequence, or to time the wakeup of the screen as well.
-
-
-## Testing the Mirror Endpoint
-
-```bash
-curl -X POST -H "Content-Type: application/json" \
-    -d '{"message": "Your pizza is ready!"}' \
-    "http://yourhouse.duckdns.org:8080/webhook?template=test"
 ```
