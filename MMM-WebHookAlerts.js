@@ -1,4 +1,7 @@
 /* global Module */
+/* 
+This code was originally written by JC21 https://github.com/jc21/MMM-IFTTT and modified by P J Tewkesbury
+*/
 
 Module.register('MMM-WebHookAlerts',{
 
@@ -7,9 +10,7 @@ Module.register('MMM-WebHookAlerts',{
      */
     defaults: {
         displaySeconds: 60,
-        fadeSpeed: 3000,
-        size: 'large',
-        debug: false
+        fadeSpeed: 3000        
     },
 
     /**
@@ -78,7 +79,7 @@ Module.register('MMM-WebHookAlerts',{
         }
 
         let wrapper = document.createElement('div');
-        wrapper.className = 'thin bright ' + this.config.size;
+        wrapper.className = 'thin bright ';
         wrapper.innerHTML=message;     
         return wrapper;
     }

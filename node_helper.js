@@ -1,3 +1,7 @@
+/* 
+This code was originally written by JC21 https://github.com/jc21/MMM-IFTTT and modified by P J Tewkesbury
+*/
+
 'use strict';
 
 const _ = require('lodash');
