@@ -1,11 +1,10 @@
 # MMM-WebHookAlerts
-[MagicMirror](https://magicmirror.builders/) Module for web hook alerts
+[MagicMirror](https://magicmirror.builders/) The MMM-WebHookAlerts module for [MagicMirror](https://magicmirror.builders/) will display a message on your MagicMirror when a [webhook notification](https://en.wikipedia.org/wiki/Webhook) is received. When a webhook notification message is received, then it is displayed fullscreen on the MagicMirror. You can specify what is displayed by the use of templates, and you can even pull data from the body of the HTTP Post in Json format into the template because the template engine used is [Mustache](https://www.npmjs.com/package/mustache). You can define multiple templates for different webhook notifications by the use of a query string parameter called 'templateName'
 
 ![Screenshot](screenshot.png)
 
 This module is intended to display immediate notifications of events from any device that can send a HTTP Post message.
 Notifications will show for a default of 60 seconds before disappearing. There is no on-screen history of events.
-
 
 ## Module installation
 
@@ -32,13 +31,13 @@ modules: [
 				templates:
 					[
 						{
-							templateName: "DevOps",
+							templateName: "AzureDevOps",
 							template: "<div style='height:100%; background-color: #202020; color:white;border: 3px solid black; padding:5px'><h1>{{resource.definition.project.name}}</h1><br/><b>{{message.text}}</b></div>",
 							sound:"wobble.wav",
 						},
 						{
-							templateName: "DevOpsTest",
-							template: "<div class='fullscreen' style='border:1px solid black;'><b>{{message.text}}</b></div>",
+							templateName: "SimpleAlert",
+							template: "<div class='fullscreen' style='border:1px solid black;'><b>{{message}}</b></div>",
 							displaySeconds:10,
 							fadeSpeed:10,
 							sound:"wobble.wav",
@@ -80,6 +79,39 @@ modules: [
             <td><code>large</code></td>
             <td>Text size, options are: small, medium, large, xlarge</td>
         </tr>
+	    <tr>
+            <td><code>templates</code></td>
+            <td>Array of template</td>
+            <td><code>
+		templateName: "DevOps",
+		template: "<div style='height:600px; background-color: lightgray; color:black; border: 3px solid white; padding:15px'><h3>{{resource.definition.project.name}}</h3><br/>{{message.text}}</div>",
+		sound:"wobble.wav",
+		</code></td>
+            <td>Text size, options are: small, medium, large, xlarge</td>
+        </tr>	    
+        </tr>
+	    <tr>
+            <td><code>templateName</code></td>
+            <td>String</td>
+            <td><code>Name of the templalte</code></td>
+            <td>The webhook url query string parameter is matched to this value</td>
+        </tr>	
+        </tr>
+	    <tr>
+            <td><code>template</code></td>
+            <td>String</td>
+            <td><code>A html mustache template</code></td>
+            <td>This is the html mustache template</td>
+        </tr>
+	
+        </tr>
+	    <tr>
+            <td><code>sound</code></td>
+            <td>String</td>
+            <td><code>wobble.mp3</code></td>
+            <td>optional - This is the name of the sound to play when the alert is shown</td>
+        </tr>
+
     </tbody>
 </table>
 
