@@ -31,6 +31,12 @@ Module.register('MMM-WebHookAlerts',{
         this.sendSocketNotification('START', this.config);
     },
 
+    getStyles: function() {
+        return [
+            'WebHookAlert.css', // will try to load it from the vendor folder, otherwise it will load is from the module folder.            
+        ]
+    },
+
     /**
      * @param {String}  notification
      * @param {Object}  payload
@@ -79,7 +85,7 @@ Module.register('MMM-WebHookAlerts',{
         }
 
         let wrapper = document.createElement('div');
-        wrapper.className = 'thin bright ';
+        wrapper.className = 'thin bright WebHookAlert';
         wrapper.innerHTML=message;     
         return wrapper;
     }

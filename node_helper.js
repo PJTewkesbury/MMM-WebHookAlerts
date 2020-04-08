@@ -11,16 +11,7 @@ const moment = require('moment');
 const Mustache = require('mustache');
 var url = require('url');
 
-let ajv = require('ajv')({
-    allErrors: true,
-    format: 'full',
-    coerceTypes: true
-});
-
 module.exports = NodeHelper.create({
-
-    config: {}, 
-
     /**
      * node_helper start method
      */
@@ -36,8 +27,6 @@ module.exports = NodeHelper.create({
 
             // Process request.
             this.log('Incoming webhook notification : ' + JSON.stringify(req.body), true);
-
-            // var headers = JSON.stringify(req.headers);
 
             // Get query string from request
             var url_parts = url.parse(req.url, true);
