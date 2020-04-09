@@ -14,7 +14,7 @@ var url = require('url');
 module.exports = NodeHelper.create({
     /**
      * node_helper start method
-     */
+     */    
     start: function () {
         this.log('Starting node_helper');
 
@@ -51,15 +51,27 @@ module.exports = NodeHelper.create({
                 try {
                     var output = Mustache.render(template,  req.body);
 
+                    if (t.sound === undefined && this.config.sound!== undefined)
+                        t.sound = this.config.sound;
+                    if (t.displaySeconds === undefined && this.config.displaySeconds!== undefined)
+                        t.displaySeconds = this.config.displaySeconds;
+                    if (t.fadeSpeed === undefined && this.config.fadeSpeed!== undefined)
+                        t.fadeSpeed = this.config.fadeSpeed;
+                    if (t.size === undefined && this.config.size!== undefined)
+                        t.size = this.config.size;
+
                     var msg = {
                         message : output,
                         sound : t.sound,
                         displaySeconds : t.displaySeconds,
                         fadeSpeed : t.fadeSpeed,
                         size : t.size,
-                    };
-                    this.sendSocketNotification('WEBHOOKALERTS_NOTIFICATION', msg);
+                        title:"Webhook Alert"
+                    }                    
 
+                    this.log('Incoming webhook notification '+ JSON.stringify(msg));
+                    this.sendSocketNotification('WEBHOOKALERTS_NOTIFICATION', msg);
+                    
                     // return OK to caller
                     res.status(200)
                         .send({
@@ -77,6 +89,7 @@ module.exports = NodeHelper.create({
                 }
             }
             else {
+                this.log('Incoming webhook notification Failed - Template not specifed or found in config');
                 // Return error to caller
                 res.status(400)
                     .send({
@@ -105,9 +118,7 @@ module.exports = NodeHelper.create({
      * @param {String}  message
      * @param {Boolean} [debug_only]
      */
-    log: function (message, debug_only) {
-        if (!debug_only || (debug_only && typeof this.config.debug !== 'undefined' && this.config.debug)) {
-            console.log('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] [MMM-IFTTT] ' + message);
-        }
+    log: function (message) {
+        console.log('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] [MMM-WebHookAlert] ' + message);        
     }
 });
