@@ -60,7 +60,9 @@ Module.register('MMM-WebHookAlerts',{
     // /**
     //  * @returns {*}
     //  */
-    // getDom: function() {
+    getDom: function() {
+        return null;
+    }
     //     let message = '';
     //     if (this.currentNotification !== null) {
     //         message = this.currentNotification.message;
