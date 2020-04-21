@@ -27,6 +27,7 @@ module.exports = NodeHelper.create({
 
             // Process request.
             this.log('Incoming webhook notification : ' + JSON.stringify(req.body), true);
+	    this.log(JSON.stringify(this.config));
 
             // Get query string from request
             var url_parts = url.parse(req.url, true);
@@ -49,7 +50,10 @@ module.exports = NodeHelper.create({
             if (t) {
                 var template = t.template;
                 try {
-                    var output = Mustache.render(template,  req.body);
+                    var output = Mustache.render(t.template,  req.body);
+		    var title="WebHook";
+	            if (t.title != undefined)
+		        title = Mustache.render(t.title, req.body);
 
                     if (t.sound === undefined && this.config.sound!== undefined)
                         t.sound = this.config.sound;
@@ -66,12 +70,12 @@ module.exports = NodeHelper.create({
                         displaySeconds : t.displaySeconds,
                         fadeSpeed : t.fadeSpeed,
                         size : t.size,
-                        title:"Webhook Alert"
-                    }                    
+                        title: title
+                    }
 
                     this.log('Incoming webhook notification '+ JSON.stringify(msg));
                     this.sendSocketNotification('WEBHOOKALERTS_NOTIFICATION', msg);
-                    
+
                     // return OK to caller
                     res.status(200)
                         .send({
@@ -105,10 +109,13 @@ module.exports = NodeHelper.create({
      * @param {String} notification
      * @param {*}      payload
      */
-    socketNotificationReceived: function (notification, payload) {
+    socketNotificationReceived: function (notification, payload)
+	{
+	this.log("Socket Notification recevied : "+notification);
         if (notification === 'START') {
             // Load config into this module
             this.config = payload;
+	this.log("Config at start "+this.config);
         }
     },
 

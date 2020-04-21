@@ -1,9 +1,15 @@
 .WebHookAlert
 {
-    width: 100%;
+    width: 600px;
     height: 100%;    
     position: absolute;
     top: 0;
     right: 0;    
     opacity : 0;
+    background-color: #cccccc!important;
+}
+
+.ns-box
+{
+    background-color: #cccccc!important;
 }

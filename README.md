@@ -38,6 +38,7 @@ modules: [
 		{
 			templateName: "SimpleAlert",
 			template: "<div class='fullscreen' style='border:1px solid black;'><b>{{message}}</b></div>",
+			title  : "{{Title}}",
 			displaySeconds:10,
 			fadeSpeed:10,
 			sound:"wobble.wav",
@@ -95,11 +96,17 @@ modules: [
         </tr>	
         </tr>
 	    <tr>
+            <td><code>title</code></td>
+            <td>String</td>
+            <td><code>A html mustache template</code></td>
+            <td>This is the html mustache template for the title</td>
+        </tr>	
+ <tr>
             <td><code>template</code></td>
             <td>String</td>
             <td><code>A html mustache template</code></td>
-            <td>This is the html mustache template</td>
-        </tr>	
+            <td>This is the html mustache template for the main notification text</td>
+        </tr>
         </tr>
 	    <tr>
             <td><code>sound</code></td>
