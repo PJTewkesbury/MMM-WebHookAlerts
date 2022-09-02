@@ -13,6 +13,6 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "latest",
-    "mustache": "4.0.0"
+    "mustache": "^4.2.0"
   }
 }

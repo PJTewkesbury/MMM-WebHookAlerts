@@ -1,4 +1,4 @@
-/* 
+/*
 This code was originally written by JC21 https://github.com/jc21/MMM-IFTTT and modified by P J Tewkesbury
 */
 
@@ -10,11 +10,12 @@ const bodyParser = require('body-parser');
 const moment = require('moment');
 const Mustache = require('mustache');
 var url = require('url');
+const { findLastKey } = require('lodash');
 
 module.exports = NodeHelper.create({
     /**
      * node_helper start method
-     */    
+     */
     start: function () {
         this.log('Starting node_helper');
 
@@ -27,7 +28,7 @@ module.exports = NodeHelper.create({
 
             // Process request.
             this.log('Incoming webhook notification : ' + JSON.stringify(req.body), true);
-	    this.log(JSON.stringify(this.config));
+            this.log(JSON.stringify(this.config));
 
             // Get query string from request
             var url_parts = url.parse(req.url, true);
@@ -43,37 +44,42 @@ module.exports = NodeHelper.create({
 
             // Find TemplateName in MagicMirror Config
             var t = this.config.templates.find(function (e) {
-                return (e.templateName == templateName);
+                return (templateName.toLocaleLowerCase() == e.templateName.toLocaleLowerCase());
             });
 
             // If we have template then render and display
             if (t) {
                 var template = t.template;
                 try {
-                    var output = Mustache.render(t.template,  req.body);
-		    var title="WebHook";
-	            if (t.title != undefined)
-		        title = Mustache.render(t.title, req.body);
+                    var output = Mustache.render(t.template, req.body);
 
-                    if (t.sound === undefined && this.config.sound!== undefined)
+                    // var firstLineOnly = t.onlyShowFirstLine | false;
+                    // if (firstLineOnly == true)
+                    output = this.FirstLineOnly(output);
+
+                    var title = "WebHook";
+                    if (t.title != undefined)
+                        title = Mustache.render(t.title, req.body);
+
+                    if (t.sound === undefined && this.config.sound !== undefined)
                         t.sound = this.config.sound;
-                    if (t.displaySeconds === undefined && this.config.displaySeconds!== undefined)
+                    if (t.displaySeconds === undefined && this.config.displaySeconds !== undefined)
                         t.displaySeconds = this.config.displaySeconds;
-                    if (t.fadeSpeed === undefined && this.config.fadeSpeed!== undefined)
+                    if (t.fadeSpeed === undefined && this.config.fadeSpeed !== undefined)
                         t.fadeSpeed = this.config.fadeSpeed;
-                    if (t.size === undefined && this.config.size!== undefined)
+                    if (t.size === undefined && this.config.size !== undefined)
                         t.size = this.config.size;
 
                     var msg = {
-                        message : output,
-                        sound : t.sound,
-                        displaySeconds : t.displaySeconds,
-                        fadeSpeed : t.fadeSpeed,
-                        size : t.size,
-                        title: title
+                        message: output,
+                        sound: t.sound,
+                        displaySeconds: t.displaySeconds,
+                        fadeSpeed: t.fadeSpeed,
+                        size: t.size,
+                        title: title,
                     }
 
-                    this.log('Incoming webhook notification '+ JSON.stringify(msg));
+                    this.log('Incoming webhook notification ' + JSON.stringify(msg));
                     this.sendSocketNotification('WEBHOOKALERTS_NOTIFICATION', msg);
 
                     // return OK to caller
@@ -109,13 +115,12 @@ module.exports = NodeHelper.create({
      * @param {String} notification
      * @param {*}      payload
      */
-    socketNotificationReceived: function (notification, payload)
-	{
-	this.log("Socket Notification recevied : "+notification);
+    socketNotificationReceived: function (notification, payload) {
+        this.log("Socket Notification recevied : " + notification);
         if (notification === 'START') {
             // Load config into this module
             this.config = payload;
-	this.log("Config at start "+this.config);
+            this.log("Config at start " + this.config);
         }
     },
 
@@ -126,6 +131,11 @@ module.exports = NodeHelper.create({
      * @param {Boolean} [debug_only]
      */
     log: function (message) {
-        console.log('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] [MMM-WebHookAlert] ' + message);        
+        console.log('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] [MMM-WebHookAlert] ' + message);
+    }
+    , FirstLineOnly: function (text) {
+        return text.split('&#x2F;r&#x2F;n')[0];
     }
 });
+
+
