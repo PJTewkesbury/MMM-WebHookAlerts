@@ -41,11 +41,14 @@ module.exports = NodeHelper.create({
                     templateName = query.templateName;
                 }
             }
+            console.log("Template List : ", this.config.templates);
 
             // Find TemplateName in MagicMirror Config
             var t = this.config.templates.find(function (e) {
                 return (templateName.toLocaleLowerCase() == e.templateName.toLocaleLowerCase());
             });
+
+            console.log("Template Found  : ", t);
 
             // If we have template then render and display
             if (t) {
@@ -53,9 +56,11 @@ module.exports = NodeHelper.create({
                 try {
                     var output = Mustache.render(t.template, req.body);
 
-                    // var firstLineOnly = t.onlyShowFirstLine | false;
-                    // if (firstLineOnly == true)
-                    output = this.FirstLineOnly(output);
+                    var firstLineOnly = false;
+                    if (t.onlyShowFirstLine === true)
+                        firstLineOnly = true;
+                    if (firstLineOnly == true)
+                        output = this.FirstLineOnly(output);
 
                     var title = "WebHook";
                     if (t.title != undefined)
@@ -134,7 +139,7 @@ module.exports = NodeHelper.create({
         console.log('[' + moment().format('YYYY-MM-DD HH:mm:ss') + '] [MMM-WebHookAlert] ' + message);
     }
     , FirstLineOnly: function (text) {
-        return text.split('&#x2F;r&#x2F;n')[0];
+        return text.split('/r/n')[0];
     }
 });
 
