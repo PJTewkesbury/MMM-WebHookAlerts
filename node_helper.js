@@ -4,13 +4,11 @@ This code was originally written by JC21 https://github.com/jc21/MMM-IFTTT and m
 
 'use strict';
 
-const _ = require('lodash');
 const NodeHelper = require('node_helper');
 const bodyParser = require('body-parser');
 const moment = require('moment');
 const Mustache = require('mustache');
 var url = require('url');
-const { findLastKey } = require('lodash');
 
 module.exports = NodeHelper.create({
     /**
